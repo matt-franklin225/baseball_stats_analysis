@@ -2,6 +2,7 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import pandas as pd
+import player
 
 def make_bold(val):
     return 'font-weight: bold'
