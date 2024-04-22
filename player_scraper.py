@@ -72,7 +72,9 @@ def get_player(player_id, csv = False, excel = False, batter = True):
 
 
 if __name__ == '__main__':
-    name = input('Enter the player\'s name: ').split(' ')
+    name = []
+    while len(name) < 2:
+        name = input('Enter the player\'s name: ').split(' ')
 
     last = name[1].lower() if len(name[1]) <= 5 else name[1][:5].lower()
     first = name[0][:2].lower()
