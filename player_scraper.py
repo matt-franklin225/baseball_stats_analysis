@@ -2,12 +2,16 @@ import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin
 import pandas as pd
-import player
+from player import Player
 
-def make_bold(val):
-    return 'font-weight: bold'
 
-def get_player(player_id, csv = False, excel = False, batter = True):
+
+def write_player_html_to_file(player_id, soup) -> None:
+    with open(f'HTML\\{player_id}_info.html', 'wb') as file:
+        file.write(soup.prettify('utf-8'))
+
+
+def get_player(player_id, csv = False, excel = False, batter = True) -> Player:
     base_site = f"https://www.baseball-reference.com/players/{player_id[0]}/{player_id}.shtml"
 
     response = requests.get(base_site)
@@ -16,9 +20,6 @@ def get_player(player_id, csv = False, excel = False, batter = True):
     html = response.content
 
     soup = BeautifulSoup(html, "html.parser")
-
-    #with open(f'{player_id}_info.html', 'wb') as file:
-        #file.write(soup.prettify('utf-8'))
 
     if batter: 
         main_content = soup.find('div', id = 'div_batting_standard')
@@ -64,14 +65,17 @@ def get_player(player_id, csv = False, excel = False, batter = True):
             #continue
 
     finally:
-        if csv:
-            player_info.to_csv(f"CSV\\{player_id}_info.csv", index = False, header = True)
-        if excel:
-            #styled_player_info.to_excel(f"{player_id}_info.xlsx", index = False, header = True)
-            player_info.to_excel(f"Excel\\{player_id}_info.xlsx", index = False, header = True)
+
+        write_player_html_to_file(player_id, soup)
+
+        player = Player()
+        player.load_data(player_info)
+        return player
 
 
 
+
+#Including this option here for more convenient testing
 if __name__ == '__main__':
     name = []
     while len(name) < 2:
@@ -81,7 +85,6 @@ if __name__ == '__main__':
     first = name[0][:2].lower()
     id = last + first + '01'
 
-    #id = input("Enter MLB player ID: ")
     csv = (input('Do you want a CSV file? (1 for yes) ') == '1')
     excel = (input('Do you want an Excel file? (1 for yes) ') == '1')
 

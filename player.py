@@ -17,10 +17,11 @@ class Player:
         self.id = id
         self.position = position
 
-    def load_info(self, name, id, position):
+    def load_info(self, name, id, position) -> None:
         self.name = name
         self.id = id
         self.position = position
 
-    def load_data(self, new_data: pd.DataFrame):
+    def load_data(self, new_data: pd.DataFrame) -> None:
         self.data = new_data.values
+        print(self.data)
