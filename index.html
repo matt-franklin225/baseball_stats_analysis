@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Baseball Player Comparison</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        display: flex;
+        height: 100vh;
+    }
+    .search-section {
+        flex: 1;
+        padding: 20px;
+    }
+    input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 16px;
+    }
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+    }
+</style>
+</head>
+<body>
+<h1>
+    Baseball Player Comparison
+</h1>
+<div class="container">
+    <div class="search-section">
+        <h2>Player 1</h2>
+        <form id="searchForm1" action="/search" method="POST">
+            <input type="text" id="searchInput1" placeholder="Enter player's name">
+            <input type="submit" value="Search">
+        </form>
+        <div id="searchResults1">
+            <!-- Search results for player 1 will be displayed here -->
+        </div>
+    </div>
+    <div class="search-section">
+        <h2>Player 2</h2>
+        <form id="searchForm2" action="/search" method="POST">
+            <input type="text" id="searchInput2" placeholder="Enter player's name">
+            <input type="submit" value="Search">
+        </form>
+        <div id="searchResults2">
+            <!-- Search results for player 2 will be displayed here -->
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('searchForm1').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting and refreshing the page
+        
+        var searchTerm1 = document.getElementById('searchInput1').value;
+        var searchResultsDiv1 = document.getElementById('searchResults1');
+        searchResultsDiv1.innerHTML = '<p>Attempting search...</p>';
+
+        // Send the search term to the Flask server
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/search', true);
+        xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+        searchResultsDiv1.innerHTML = '<p>Entering function...</p>';
+
+        xhr.onreadystatechange = function () {
+            searchResultsDiv1.innerHTML = '<p>Function entered... Ready state: ' + xhr.readyState + ', Status code: ' + xhr.status + '</p>';
+            if (xhr.readyState === 4 && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                //searchResultsDiv1.innerHTML = '<p>Search results for Player 1: ' + response.player_name + '</p>';
+                searchResultsDiv1.innerHTML = '<p>Search results for Player 1: </p>';
+                // Add code to display player statistics here
+            }
+        };
+        xhr.send('player_name=' + encodeURIComponent(searchTerm1));
+    });
+</script>
+
+</body>
+</html>

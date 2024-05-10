@@ -2,7 +2,7 @@
 from player_scraper import *
 
 def introduction() -> None:
-    print("Hello, and welcome to my baseball statistics analysis project! ")
+    print("Hello, and welcome to my baseball statistics analysis project. ")
     print("I hope you enjoy it and find it useful! --Matt \n")
 
 
@@ -36,8 +36,9 @@ def print_player(id, name, positions, years):
     print(f'{id[-1]}. {name} ({positions}) {years}')
 
 
-def find_player_id() -> str:
+def find_player_id_and_position() -> str:
     player_id = ''
+    position = ''
     while player_id == '':
         input_name = []
         while len(input_name) < 2:
@@ -62,8 +63,6 @@ def find_player_id() -> str:
                 num += 1
                 temp_id = id_start + str(num)
 
-        #print(player_options)
-
         if len(player_options) == 0:
             print("Sorry, couldn't find that player")
             continue
@@ -79,16 +78,23 @@ def find_player_id() -> str:
             ans = input("Enter your player's number (Or 0 if player not present) ")
             if int(ans) >= 1 and int(ans) <= len(player_options) + 1:
                 player_id = id_start + ans
+                position = player_options[int(ans)-1][2]
                 break
         
-    print(player_id)
-    return player_id
+    return player_id, position
+
+
+def search_player(player_name):
+    return {"player_name": player_name, "stats": {"hits": 100, "home_runs": 20, "avg": 0.320}}
+
 
 
 if __name__ == '__main__':
     introduction()
 
-    id = find_player_id()
+    (id, position) = find_player_id_and_position()
+
+    print(f'ID: {id}, Position: {position}')
 
     batter = False
     if batter:

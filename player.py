@@ -24,4 +24,4 @@ class Player:
 
     def load_data(self, new_data: pd.DataFrame) -> None:
         self.data = new_data.values
-        print(self.data)
+        #print(self.data)
