@@ -9,8 +9,7 @@ CORS(app)
 def search():
     player_name = request.form['player_name']
     
-    # Here you would call your Python script to perform the search
-    # Replace this with your actual script execution
+    #Making the actual search
     search_results = search_player(player_name)
     
     return jsonify(search_results)

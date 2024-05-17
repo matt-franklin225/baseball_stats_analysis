@@ -11,7 +11,7 @@ def write_player_html_to_file(player_id, soup) -> None:
         file.write(soup.prettify('utf-8'))
 
 
-def get_player(player_id, csv = False, excel = False, batter = True) -> Player:
+def get_player(player_id, batter = True) -> Player:
     base_site = f"https://www.baseball-reference.com/players/{player_id[0]}/{player_id}.shtml"
 
     response = requests.get(base_site)
@@ -37,15 +37,19 @@ def get_player(player_id, csv = False, excel = False, batter = True) -> Player:
     # Filter out None values
     data_stat_values = [value for value in data_stat_values if value is not None]
 
-    #with open(f'{player_id}_stats.html', 'wb') as file:
-        #file.write(main_content.prettify('utf-8'))
-
     player_info = pd.DataFrame()
 
     player_info["Year"] = [year.text for year in main_content.find_all('th', {"data-stat": "year_ID"})][1:]
     length = len(player_info["Year"])
 
+    #Get career total section
+    career_section = main_content.find('tfoot')
+    career_info = pd.DataFrame()
+    for data_stat_value in data_stat_values[2:]:
+            career_info[data_stat_value] = [item.text for item in career_section.find_all(lambda tag: tag.name in ['td', 'th'] and tag.get('data-stat') == data_stat_value)][0:1]
+    career_info.to_csv(f'CSV\\{player_id}_career_stats.csv', index = False)
 
+    #Get all the stats
     try:
         for data_stat_value in data_stat_values:
             player_info[data_stat_value] = [value.text for value in main_content.find_all(lambda tag: tag.name in ['td', 'th'] and tag.get('data-stat') == data_stat_value)][1:length+1]
@@ -66,17 +70,19 @@ def get_player(player_id, csv = False, excel = False, batter = True) -> Player:
 
     finally:
 
-        write_player_html_to_file(player_id, soup)
+        #write_player_html_to_file(player_id, soup)
 
         player = Player()
-        player.load_data(player_info)
+        player.load_yearly_data(player_info)
+        player.load_career_data(career_info)
+        player.determine_style()
         return player
-
 
 
 
 #Including this option here for more convenient testing
 if __name__ == '__main__':
+    '''
     name = []
     while len(name) < 2:
         name = input('Enter the player\'s name: ').split(' ')
@@ -85,12 +91,11 @@ if __name__ == '__main__':
     first = name[0][:2].lower()
     id = last + first + '01'
 
-    csv = (input('Do you want a CSV file? (1 for yes) ') == '1')
-    excel = (input('Do you want an Excel file? (1 for yes) ') == '1')
-
     batter = (input('Is your player a batter? (1 for yes) ') == '1')
 
     if batter:
-        get_player(id, csv, excel, batter = True)
+        get_player(id, batter = True)
     else:
-        get_player(id, csv, excel, batter = False)
+        get_player(id, batter = False)
+    '''
+    get_player('bondsba01', batter = True)
