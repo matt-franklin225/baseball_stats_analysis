@@ -66,3 +66,17 @@ class Player:
         points += ((int(stats["HR"].iloc[0]) / int(stats["AB"].iloc[0])))*8
         points += ((int(stats["SO"].iloc[0]) / int(stats["AB"].iloc[0])))/2
         return points
+
+    def disciplined_points(self):
+        stats = self.career_panda
+        points = 0
+        points += ((int(stats["BB"].iloc[0]) / int(stats["PA"].iloc[0])))*4
+        points += (1-(int(stats["SO"].iloc[0]) / int(stats["AB"].iloc[0])))/4
+        return points
+
+    def speedster_points(self):
+        stats = self.career_panda
+        points = 0
+        points += ((int(stats["SB"].iloc[0]) / int(stats["PA"].iloc[0])))*8
+        points += float(stats["batting_avg"].iloc[0])
+        return points
