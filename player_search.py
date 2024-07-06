@@ -84,8 +84,10 @@ def find_player_id_and_position() -> str:
     return player_id, position
 
 
-def search_player(player_name):
-    return {"player_name": player_name, "stats": {"hits": 100, "home_runs": 20, "avg": 0.320}}
+def search_player(id):
+    player = get_player(id)
+    return player.career_stats
+    #return {"player_id": id, "stats": {"hits": 100, "home_runs": 25, "avg": 0.320}}
 
 
 
